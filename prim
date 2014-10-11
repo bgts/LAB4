@@ -1,0 +1,76 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define infinite 10000
+void Prim(int N,int **edge)
+{
+    int *lowcost,*closset,min,i,j,k,*father,*visited;
+    lowcost=(int *)malloc(N*sizeof(int));
+    closset=(int *)malloc(N*sizeof(int));
+    father=(int *)malloc(N*sizeof(int));
+    visited=(int *)malloc(N*sizeof(int));
+    for(i=0; i<N; i++)
+    {
+        lowcost[i]=infinite;
+        visited[i]=0;
+    }//初始化
+    for(i=0; i<N; i++)
+    {
+        if(edge[0][i]>0)
+        {
+            lowcost[i]=edge[0][i];//把edge[0][i]中有意义的权值赋给lowcost[i]
+        }
+        closset[i]=0;
+    }
+    visited[0]=1;
+    father[0]=-1;
+    for(i=0; i<N; i++)
+    {
+        min=lowcost[0];
+        k=0;
+        for(j=0; j<N; j++)
+        {
+            if(min>lowcost[j]&&!visited[j])
+            {
+                min=lowcost[j];//选出lowcost[]中的最小值
+                k=j;
+            }
+        }
+        visited[k]=1;
+        father[k]=closset[k];
+        for(j=0; j<N; j++)//更新lowcost和closset
+        {
+            if(edge[k][j]>0&&edge[k][j]<lowcost[j]&&!visited[j])
+            {
+                lowcost[j]=edge[k][j];
+                closset[j]=k;
+            }
+        }
+    }
+    for(i=0; i<N; i++)
+        printf("%d %d\n",i,father[i]);
+}
+int main()
+{
+    int **edge,N,i,j,w;
+    printf("=======求无向图的最小生成树=======\n\n");
+    printf("请输入图的顶点数\n");
+    scanf("%d",&N);
+    edge=(int**)malloc(N*sizeof(int*));
+    for(i=0; i<N; i++)
+        edge[i]=(int *)malloc(N*sizeof(int));
+    for(i=0; i<N; i++)
+        for(j=0; j<N; j++)
+            edge[i][j]=0;
+    printf("请输入边依附的顶点及其权值，输入权值“0”表示结束\n");
+    scanf("%d %d %d",&i,&j,&w);
+    while(w!=0)
+    {
+        edge[i][j]=w;
+        edge[j][i]=w;
+        scanf("%d %d %d",&i,&j,&w);
+    }
+    printf("树的节点及其父亲节点为：\n");
+    Prim(N,edge);
+    return 0;
+}
