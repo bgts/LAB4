@@ -1,0 +1,57 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int FindPivot(int i,int j,int a[])
+{
+    int firstkey=a[i],k;
+    for(k=i+1; k<=j; k++)
+        if(a[k]>firstkey)
+            return k;
+        else if(a[k]<firstkey)
+            return i;
+    return -1;
+}
+int Partition(int i,int j,int pivot,int a[])
+{
+    int l,r,t;
+    do
+    {
+        for(l=i; a[l]<pivot; l++);
+        for(r=j; a[r]>=pivot; r--);
+        if(l<r)
+        {
+            t=a[l];
+            a[l]=a[r];
+            a[r]=t;
+        }
+    }
+    while(l<=r);
+    return l;
+}
+void quicksort(int a[],int i,int j)
+{
+    int pivot,k,pivotindex;
+    pivotindex=FindPivot(i,j,a);
+    if(pivotindex!=-1)
+    {
+        pivot=a[pivotindex];
+        k=Partition(i,j,pivot,a);
+        quicksort(a,i,k-1);
+        quicksort(a,k,j);
+    }
+}
+int main()
+{
+    int *a,i,n;
+    printf("请输入待排序的数据个数：\n");
+    scanf("%d",&n);
+    a=(int*)malloc(n*sizeof(int));
+    printf("请输入待排序的数据\n");
+    for(i=0; i<n; i++)
+        scanf("%d",&a[i]);
+    quicksort(a,0,n-1);
+    for(i=0; i<n; i++)
+        printf("%d ",a[i]);
+    return 0;
+}
+
