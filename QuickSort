@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 int FindPivot(int i,int j,int a[])
-{
+{//90q3488rt90q3t0
     int firstkey=a[i],k;
     for(k=i+1; k<=j; k++)
         if(a[k]>firstkey)
