@@ -1,0 +1,37 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+void ShellSort(int a[],int N)
+{
+    int i,d,j,t;
+    for(d=N/2;d>0;d=d/2)
+    {
+        for(i=2*d-1;i<N;i=i+d)
+        {
+            j=i;
+            while(a[j]<a[j-d]&&j-d>=0)
+            {
+                t=a[j];
+                a[j]=a[j-1];
+                a[j-1]=t;
+                j=j-d;
+            }
+        }
+    }
+}
+int main()
+{
+    int *a,i,N;
+    printf("======希尔排序======\n\n请输入待排序的元素个数\n");
+    scanf("%d",&N);
+    a=(int*)malloc(N*sizeof(int));
+    printf("请输入待排序的元素\n");
+    for(i=0; i<N; i++)
+        scanf("%d",&a[i]);
+    ShellSort(a,N);
+    printf("升序：\n");
+    for(i=0; i<N; i++)
+        printf("%d ",a[i]);
+    return 0;
+}
+
