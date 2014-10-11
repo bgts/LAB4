@@ -1,0 +1,24 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int main()
+{
+    float a,b,A,N,n,x0,y0,x1,y1,K1,K2,K3,K4,h;
+    scanf("%f %f %f %f",&a,&b,&A,&N);
+    x0=a;
+    y0=A;
+    h=(b-a)/N;
+    for(n=0;n<N;n++)
+    {
+        K1=h*(x0+y0);
+        K2=h*(x0+h/2+y0+K1/2);
+        K3=h*(x0+h/2+y0+K2/2);
+        K4=h*(x0+h+y0+K3);
+        x1=x0+h;
+        y1=y0+(K1+2*K2+2*K3+K4)/6;
+        printf("%f %f",x1,y1);
+        x0=x1;
+        y0=y1;
+    }
+    return 0;
+}
