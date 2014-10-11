@@ -1,0 +1,134 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct nod
+{
+    int left,right,cover;//区间左右值 线段被覆盖的次数
+    struct nod *leftchild,*rightchild;
+} node;
+node* STBuild(int left,int right) //建立二叉树
+{
+    node *root=(node*)malloc(sizeof(node));
+    int mid=(right+left)/2;
+    root->left=left;
+    root->right=right;     //设置结点区间
+    root->leftchild=NULL;
+    root->rightchild=NULL;
+    root->cover=0;
+    if (left<right&&(mid!=left&&mid!=right))
+    {
+        root->leftchild=STBuild(left,mid) ;
+        root->rightchild=STBuild(mid,right) ;
+    }
+    return root;
+}
+node* STInsert(node* root,int left,int right)
+{
+    int rmid=(root->left+root->right)/2;
+    if(left==root->left&&right==root->right)
+    {
+        root->cover++;
+        return root;
+    }
+    else if(rmid>=right)
+    {
+        root->leftchild=STInsert(root->leftchild,left,right);
+    }
+    else if(rmid<=left)
+    {
+        root->rightchild=STInsert(root->rightchild,left,right);
+    }
+    else if(left<rmid&&right>rmid)
+    {
+        root->leftchild=STInsert(root->leftchild,left,rmid);
+        root->rightchild=STInsert(root->rightchild,rmid,right);
+    }
+    return root;
+}
+node* STDelete(node* root,int left,int right)
+{
+    int rmid=(root->left+root->right)/2;
+    if(left==root->left&&right==root->right)
+    {
+        root->cover--;
+        return root;
+    }
+    else if(rmid>=right)
+    {
+        root->leftchild=STDelete(root->leftchild,left,right);
+    }
+    else if(rmid<=left)
+    {
+        root->rightchild=STDelete(root->rightchild,left,right);
+    }
+    else if(left<rmid&&right>rmid)
+    {
+        root->leftchild=STDelete(root->leftchild,left,rmid);
+        root->rightchild=STDelete(root->rightchild,rmid,right);
+    }
+    return root;
+}
+int STSearch(node* root,int left,int right)
+{
+    int cover=0,cover1=0,cover2=0,rmid=(root->left+root->right)/2;
+    if(left==root->left&&right==root->right)
+    {
+        return cover+root->cover;
+    }
+    else if(rmid>=right)
+    {
+        cover+=STSearch(root->leftchild,left,right);
+    }
+    else if(rmid<=left)
+    {
+        cover+=STSearch(root->rightchild,left,right);
+    }
+    else if(left<rmid&&right>rmid)
+    {
+        cover1+=STSearch(root->leftchild,left,rmid);
+        cover2+=STSearch(root->rightchild,rmid,right);
+        cover=cover1<cover2?cover1:cover2;
+    }
+return cover+root->cover;
+}
+int main()
+{
+    node *root;
+    int left,right,cover=0,op=1;
+    printf("请输入该线段树的最大区间\n");
+    scanf("%d %d",&left,&right);
+    root=STBuild(left,right);
+    printf("请选择功能：\n1.插入\n2.删除\n3.查找\n0.退出\n");
+    while(op>0&&op<4)
+    {
+        scanf("%d",&op);
+        if(op==1)
+        {
+            printf("请输入待插入的线段，输入“0 0”结束\n");
+            scanf("%d %d",&left,&right);
+            while(left!=right)
+            {
+                root=STInsert(root,left,right);
+                scanf("%d %d",&left,&right);
+            }
+        }
+        if(op==2)
+        {
+            printf("请输入待删除的线段，输入“0 0”结束\n");
+            scanf("%d %d",&left,&right);
+            while(left!=right)
+            {
+                root=STDelete(root,left,right);
+                scanf("%d %d",&left,&right);
+            }
+        }
+        if(op==3)
+        {
+            printf("请输入待查找的线段\n");
+            scanf("%d %d",&left,&right);
+            cover=STSearch(root,left,right);
+            printf("[%d,%d]被完全覆盖%d次\n",left,right,cover);
+        }
+    }
+    return 0;
+}
